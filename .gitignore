@@ -1,0 +1,8 @@
+venv
+.idea
+*.pyc
+lib/*
+*/*.ipynb_checkpoints
+.ipynb_checkpoints
+out/*
+test.py
