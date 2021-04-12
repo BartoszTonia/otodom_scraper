@@ -3,8 +3,8 @@
 
 ### Features
 - scrapes basic offer information from Otodom.pl search page, then retrieve more information from offer page.
-- creates csv file prepared for further analysis with Jupyter notebooks 
-(see https://github.com/BartoszTonia/otodom_notebook.git)
+- creates csv file prepared for further analysis with Jupyter notebooks - 
+<a href="https://github.com/BartoszTonia/otodom_notebook.git"> BartoszTonia/otodom_notebook </a>
 - scraper temporary writes in `lib/temp.csv`, updates line by line and converts into file only after the last page of search will be reached. This allows us to resume scraper from any page if something suddenly break the connection.
 - created database contains set of columns depended from 'rent' or 'sell' type of offer:
 
