@@ -24,9 +24,6 @@ def get_soup(url):
     return BeautifulSoup(response.content, 'html.parser')
 
 
-soup = get_soup(quick_url)
-
-
 class Soup:
     def __init__(self, soup):
         self.soup = soup
@@ -54,11 +51,11 @@ class OfferModel(Soup):
         self.market = self.get_market()
         self.floor = self.get_floor()
         self.floor_count = self.get_floor_count()
-        self.addons = self.detail_soup.find_all('li', 'css-1r5xhnu e9d1vc81')
+        self.addons = self.detail_soup.find_all('li', 'css-1r5xhnu')
         self.addons = ':'.join([self.addons[i].text for i in range(len(self.addons))])
 
     def get_market(self):
-        if 'pierwotny' in str(self.detail_soup.find_all('div', 'css-18h1kfv ecjfvbm3')):
+        if 'pierwotny' in str(self.detail_soup.find_all('div', 'css-18h1kfv')):
             return 1
         else:
             return 0
@@ -66,27 +63,27 @@ class OfferModel(Soup):
     def get_floor_count(self):
         floor_count = self.detail_soup.find('div', {'aria-label': 'Liczba pięter'})
         if floor_count:
-            return int(floor_count.find('div', 'css-1ytkscc ecjfvbm0')['title'])
+            return int(floor_count.find('div', 'css-1ytkscc')['title'])
         else:
             return 0
 
     def get_floor(self):
         floor = self.detail_soup.find('div', {'aria-label': 'Piętro'})
         if floor:
-            return floor.find('div', 'css-1ytkscc ecjfvbm0')['title']
+            return floor.find('div', 'css-1ytkscc')['title']
         else:
             return 0
 
     def get_loc(self):
         try:
-            return self.detail_soup.find('a', 'css-1qz7z11 eom7om61').text
+            return self.detail_soup.find('a', 'css-1qz7z11').text
         except AttributeError:
             return 0
 
     def get_year(self):
         year = self.detail_soup.find('div', {'aria-label': 'Rok budowy'})
         if year:
-            return int(year.find('div', 'css-1ytkscc ecjfvbm0')['title'])
+            return int(year.find('div', 'css-1ytkscc')['title'])
         else:
             return 0
 
@@ -136,7 +133,7 @@ class Rent(OfferModel):
     def get_rent(self):
         rent = self.detail_soup.find('div', {'aria-label': 'Czynsz - dodatkowo'})
         if rent:
-            rent = rent.find('div', 'css-1ytkscc ecjfvbm0')['title'].rstrip(' zł')
+            rent = rent.find('div', 'css-1ytkscc')['title'].rstrip(' zł')
             rent = rent.replace(' ', '').replace(',', '')
             return float(rent)
         else:
@@ -159,19 +156,14 @@ class Process:
     def pagination(self):
         url, page = self.validate_page()
         while True:
-            try:
-                url_page = url.strip(' ') + '&page=' + str(page)
-                print(url_page, end=' ')
-
-                if page > 1 and url_page != requests.get(url_page).url:
-                    raise KeyError
-                else:
-                    self.scrape_page(url_page)
-                    page += 1
-
-            except KeyError:
-                print('Checked ' + str(page - 1) + ' pages.')
+            url_page = url.strip(' ') + '&page=' + str(page)
+            if page > 1 and url_page != requests.get(url_page).url:
+                print('no more pages')
                 break
+            else:
+                print(url_page)
+                self.scrape_page(url_page)
+                page += 1
 
     def validate_page(self):
         if '?' in self.url_site:
@@ -187,17 +179,15 @@ class Process:
     def scrape_page(self, url_page):
         search_url = requests.get(url_page)
         main_soup = BeautifulSoup(search_url.content, 'html.parser')
-        self.iterate_search_results(main_soup.select('article.offer-item'), url_page)
+        soup_select = main_soup.select('article.offer-item')
+        if len(soup_select) == 0:
+            print('no offers, probably wrong url')
+            exit()
+        else:
+            self.iterate_search_results(soup_select, url_page)
 
     def iterate_search_results(self, soup_select, url):
-        page_total = len(soup_select)
-        print(str(page_total), 'listings found')
-        print('+')
-        if page_total == 0:
-            raise KeyError
-        else:
-            self.total += page_total
-        i = count = 0
+        i = 0
         while i < len(soup_select):
             duplicates = pd.read_csv(temp_path, encoding='utf-8', usecols=['id'])
             offer = soup_select[i]
@@ -207,10 +197,10 @@ class Process:
             # if offer.id in duplicates.index.values:
             if offer_id in duplicates['id'].values:
                 print('> duplicate')
-                count += 1
                 i += 1
             else:
-                sleep(0.8)
+                sleep(0.75)
+
                 if 'wynajem' in url:
                     offer = Rent(soup)
                 elif 'sprzedaz' in url:
@@ -219,14 +209,13 @@ class Process:
                     offer = None
 
                 row = offer.csv_object()
-                print(row[0:9])
+                print(row[1:6], row[-3:])
 
                 with temp_path.open('a', newline='', encoding='utf-8') as temp:
                     csv_writer = writer(temp)
                     csv_writer.writerow(row)
-                i += 1
 
-        print('\n --> ' + str(count) + ' duplicates ' + str(page_total - count) + ' new offers ')
+                i += 1
 
 
 def create_db( df, location ):
