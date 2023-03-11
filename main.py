@@ -7,8 +7,8 @@ import argparse
 # Change saved values below. Pass the base url and label for data maintenance.
 quick_url = 'https://www.otodom.pl/pl/oferty/sprzedaz/mieszkanie/wroclaw?limit=72'
 
-csv_headers_rent = 'id,price,total,rent,area,room,year,loc,url,offer,seller,addons,market,floor,floor_count'
-csv_headers_sell = 'id,price,price_m,area,room,year,loc,url,offer,seller,addons,market,floor,floor_count'
+csv_headers_rent = 'id,price,total,rent,area,room,year,loc,url,offer,seller,addons,market,floor,floor_count,seller_type'
+csv_headers_sell = 'id,price,price_m,area,room,year,loc,url,offer,seller,addons,market,floor,floor_count,seller_type'
 
 Path('out').mkdir(parents=True, exist_ok=True)
 temp_path = Path('lib/temp.csv')

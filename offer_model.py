@@ -15,16 +15,19 @@ class Offer:
             self.floor = Scraper(driver).get_floor()
             self.floor_count = Scraper(driver).get_floor_count()
             self.addons = Scraper(driver).get_addons()
-            self.seller = 'seller_test'
+            self.seller = Scraper(driver).get_seller()
+            self.seller_type = Scraper(driver).get_seller_type()
 
-            print(f' ----------->Floor: {self.floor} --- Floor count: {self.floor_count}')
+            print(f' ---> Title: {self.title} --- {self.market} ---> Price: {self.price} / {self.area} m2 '
+                  f'/ {self.year} --{self.location} ')
 
         # self.addons = ':'.join([self.addons[i].text for i in range(len(self.addons))])
         # self.pic = self.soup.find('span', 'img-cover lazy')['data-src']
 
     def csv_object(self):
         columns = [self.price, self.area, self.room_count, self.year, self.location, self.url, self.title, self.seller,
-                   self.addons, self.market, self.floor, self.floor_count]
+                   self.addons, self.market, self.floor, self.floor_count, self.seller_type
+                   ]
         return columns
 
 
