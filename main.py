@@ -1,10 +1,7 @@
 from process import Query, ProcessSearchPage, ProcessOffer, write_and_clean, check_duplicates
 from offer_model import Rent, Sell
-from datetime import datetime
 from pathlib import Path
 from csv import writer
-from time import time
-import pandas as pd
 import argparse
 
 # Change saved values below. Pass the base url and label for data maintenance.
