@@ -5,18 +5,6 @@ import re
 
 
 class Query:
-    """
-    Class for generating a list of search pages to scrape.
-
-    Attributes:
-        page_limit (int): The maximum number of search pages on Discogs is 40 pages with 250 offers per page
-        url (str): The base URL and a starting point for automatic pagination up to 40 pages.
-         output_csv_path (str): The path to the output CSV file.
-
-    Methods:
-        parse_url_page(): Parses the URL and page number from the search results URL for purpose of pagination
-        create_search_page_list(): Creates a list of search results pages based on the parsed URL and page number.
-    """
     def __init__(self, url):
         self.page_limit = 40
         self.url = url
