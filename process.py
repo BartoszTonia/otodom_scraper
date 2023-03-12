@@ -27,7 +27,6 @@ class Query:
             url = re.sub(r'&page=\d*', '', self.url)
             if '&page=' in self.url:
                 page_number = re.findall(r'(?<=&page=)\d*', self.url)
-                print(url, int(page_number[0]))
                 return url, int(page_number[0])
             else:
                 return self.url, 1
@@ -37,7 +36,6 @@ class Query:
     def create_search_page_list(self):
         url, page = self.url, self.page
         search_page_list = [url.strip(' ') + f'&page={i}' for i in range(page, self.page_limit + 1)]
-        print(search_page_list)
         return search_page_list
 
 
@@ -68,9 +66,9 @@ class ProcessOffer:
 
     def scrape_offer(self, scraper):
         with run_driver(self.url) as driver:
-            print('\r', self.url)
             offer = scraper(self.url, driver)
             if offer.price == 0:
+                print(' --- > no price')
                 pass
             else:
                 line = offer.csv_object()
@@ -79,7 +77,7 @@ class ProcessOffer:
 
 def check_duplicates(id, temp_path):
     df = pd.read_csv(temp_path, encoding="utf-8")
-    print(f'****{id}****', end='')
+    print(f'*** {id} ***', end='')
     if id in df['id'].values:
         print(f' duplicate')
         return False

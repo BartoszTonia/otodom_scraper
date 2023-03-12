@@ -14,10 +14,11 @@ options.add_experimental_option('excludeSwitches', ['enable-logging'])  # hides 
 
 
 def run_driver(url):
-    print(" >>> driver is working")
+    print(" >>> driver loading: ", end='')
     service = Service("driver\chromedriver.exe")
     driver = webdriver.Chrome(options=options, service=service)
     driver.get(url)
+    print(f'{url}', end='')
 
     try:
         WebDriverWait(driver, timeout).until(EC.presence_of_all_elements_located((By.XPATH, "//*")))
