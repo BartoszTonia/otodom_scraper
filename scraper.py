@@ -19,8 +19,9 @@ class Scraper:
                     return value
                 elif return_type == 'int':
                     # remove any non-digit characters from the string, such as the currency symbol "zł".
-                    value = int(re.sub(r'\D', '', element.text))
-                    return value
+                    value = element.text.split(',')[0]
+                    value = re.sub(r'\D', '', value)
+                    return int(value)
 
             else:
                 return None
