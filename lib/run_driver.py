@@ -15,7 +15,7 @@ options.add_experimental_option('excludeSwitches', ['enable-logging'])  # hides 
 
 def run_driver(url):
     print(" >>> driver loading: ", end='')
-    service = Service("driver\chromedriver.exe")
+    service = Service("/usr/local/bin/chromedriver")
     driver = webdriver.Chrome(options=options, service=service)
     driver.get(url)
     print(f'{url}', end='')
